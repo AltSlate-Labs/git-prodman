@@ -1,0 +1,46 @@
+# Epic: Multi-repo Portfolio
+id: EP-011
+title: "Multi-repo Portfolio View"
+status: planned
+priority: p2
+owner: null
+milestone: v1.2-ecosystem
+spec: null
+
+description: |
+  Support organizations with multiple repositories by providing a
+  portfolio view that aggregates product artifacts across repos.
+  Useful for platform teams, monorepo-adjacent setups, and
+  companies with multiple products.
+
+acceptance_criteria:
+  - "[ ] prodman portfolio add <path> registers a repo"
+  - "[ ] prodman portfolio list shows all registered repos"
+  - "[ ] prodman portfolio remove <path> unregisters repo"
+  - "[ ] Portfolio config stored in ~/.config/prodman/portfolio.yaml"
+  - "[ ] prodman ui --portfolio shows aggregated dashboard"
+  - "[ ] Cross-repo epic dependencies visualization"
+  - "[ ] Unified roadmap across all repos"
+  - "[ ] Unified search across all repos"
+  - "[ ] Per-repo filtering in portfolio view"
+  - "[ ] Portfolio-level OKRs and metrics"
+  - "[ ] Export portfolio reports (HTML/PDF)"
+  - "[ ] Git submodules support"
+
+progress: 0
+
+dependencies:
+  - EP-003  # Web UI
+  - EP-007  # Export (for portfolio reports)
+
+issues: []
+
+labels:
+  - portfolio
+  - multi-repo
+  - enterprise
+  - aggregation
+
+target_date: 2026-05-30
+created_at: 2026-01-12
+updated_at: 2026-01-12

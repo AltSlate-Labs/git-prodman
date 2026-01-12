@@ -1,0 +1,47 @@
+# Epic: VS Code Extension
+id: EP-013
+title: "VS Code Extension"
+status: planned
+priority: p2
+owner: null
+milestone: v1.2-ecosystem
+spec: null
+
+description: |
+  Native VS Code extension that brings git-prodman into the editor.
+  View and edit product artifacts without leaving your IDE. Tight
+  integration with the development workflow where engineers already
+  spend their time.
+
+acceptance_criteria:
+  - "[ ] Extension available on VS Code Marketplace"
+  - "[ ] Sidebar panel showing .prodman/ tree"
+  - "[ ] Quick view for epics (hover preview)"
+  - "[ ] Spec editor with live preview"
+  - "[ ] Status bar showing project stats"
+  - "[ ] Command palette integration (Cmd+Shift+P)"
+  - "[ ] Code lens for linked epics/specs in source files"
+  - "[ ] Auto-complete for epic/spec IDs in comments"
+  - "[ ] Inline AI queries (select code → ask about it)"
+  - "[ ] Git integration (see pending commits)"
+  - "[ ] Sync button in status bar"
+  - "[ ] Settings UI for configuration"
+  - "[ ] Works with Remote SSH/Containers"
+
+progress: 0
+
+dependencies:
+  - EP-001  # CLI Foundation (uses CLI under the hood)
+  - EP-004  # AI Integration
+
+issues: []
+
+labels:
+  - vscode
+  - extension
+  - ide
+  - developer-experience
+
+target_date: 2026-06-30
+created_at: 2026-01-12
+updated_at: 2026-01-12

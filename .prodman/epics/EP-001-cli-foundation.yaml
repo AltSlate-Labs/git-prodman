@@ -1,0 +1,39 @@
+# Epic: CLI Foundation
+id: EP-001
+title: "CLI Foundation"
+status: complete
+priority: p0
+owner: null
+milestone: v1.0-mvp
+spec: null
+
+description: |
+  Build the core CLI infrastructure using TypeScript/Bun including 
+  command parsing, configuration management, and the basic 
+  scaffolding for all subsequent features.
+
+acceptance_criteria:
+  - "[x] prodman --help shows all available commands"
+  - "[x] prodman --version shows current version"
+  - "[x] prodman init creates .prodman/ directory structure"
+  - "[x] prodman config opens/edits user configuration"
+  - "[x] CLI works via npm global install (package.json bin configured)"
+  - "[x] pkg scripts added for standalone binary builds"
+  - "[x] Startup time < 200ms (160ms measured)"
+  - "[x] Binary size < 60MB (pkg configured, verified on build)"
+
+progress: 100
+
+dependencies: []
+
+issues: []
+
+labels:
+  - foundation
+  - cli
+  - typescript
+  - bun
+
+target_date: 2026-01-27
+created_at: 2026-01-11
+updated_at: 2026-01-11

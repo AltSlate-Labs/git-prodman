@@ -1,0 +1,35 @@
+# Issue: Benchmark CLI Startup Time
+id: ISS-001
+title: "Benchmark CLI startup time < 200ms"
+epic: EP-001
+status: resolved
+type: chore
+priority: p1
+assignee: null
+
+description: |
+  Measure and optimize CLI startup time to ensure it meets the
+  < 200ms target. Fast startup is critical for developer experience.
+
+tasks:
+  - "[x] Add benchmark script (time prodman --version)"
+  - "[x] Measure current startup time"
+  - "[x] Profile with Node.js --cpu-prof if needed"
+  - "[x] Optimize lazy imports if slow"
+  - "[x] Document results in acceptance criteria"
+
+results: |
+  Measured: 160ms (built), 519ms (tsx dev mode)
+  Target: < 200ms ✓
+
+acceptance_criteria:
+  - "[x] prodman --version completes in < 200ms (160ms achieved)"
+  - "[x] Benchmark documented"
+
+labels:
+  - performance
+  - benchmark
+  - dx
+
+created_at: 2026-01-12
+updated_at: 2026-01-12

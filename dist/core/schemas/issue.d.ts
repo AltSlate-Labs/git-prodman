@@ -1,0 +1,43 @@
+import { z } from "zod";
+export declare const IssueSchema: z.ZodObject<{
+    id: z.ZodString;
+    title: z.ZodString;
+    type: z.ZodDefault<z.ZodEnum<["bug", "feature", "task", "improvement"]>>;
+    status: z.ZodDefault<z.ZodEnum<["open", "in_progress", "resolved", "closed", "wontfix"]>>;
+    priority: z.ZodDefault<z.ZodEnum<["p0", "p1", "p2", "p3"]>>;
+    epic: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    description: z.ZodOptional<z.ZodString>;
+    assignee: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    reporter: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    labels: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    created_at: z.ZodString;
+    updated_at: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    type: "bug" | "feature" | "task" | "improvement";
+    status: "in_progress" | "open" | "resolved" | "closed" | "wontfix";
+    id: string;
+    title: string;
+    priority: "p0" | "p1" | "p2" | "p3";
+    labels: string[];
+    created_at: string;
+    updated_at: string;
+    description?: string | undefined;
+    epic?: string | null | undefined;
+    assignee?: string | null | undefined;
+    reporter?: string | null | undefined;
+}, {
+    id: string;
+    title: string;
+    created_at: string;
+    updated_at: string;
+    type?: "bug" | "feature" | "task" | "improvement" | undefined;
+    status?: "in_progress" | "open" | "resolved" | "closed" | "wontfix" | undefined;
+    description?: string | undefined;
+    epic?: string | null | undefined;
+    priority?: "p0" | "p1" | "p2" | "p3" | undefined;
+    labels?: string[] | undefined;
+    assignee?: string | null | undefined;
+    reporter?: string | null | undefined;
+}>;
+export type Issue = z.infer<typeof IssueSchema>;
+export declare function createIssue(id: string, title: string, overrides?: Partial<Issue>): Issue;

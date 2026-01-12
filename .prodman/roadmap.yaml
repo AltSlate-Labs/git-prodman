@@ -1,0 +1,88 @@
+# Roadmap for git-prodman
+schema_version: 1
+
+milestones:
+  - id: v1.0-mvp
+    name: "v1.0 MVP"
+    description: "Core CLI + bundled Web UI with basic AI"
+    start_date: 2026-01-11
+    end_date: 2026-03-10
+    status: complete
+    progress: 100
+    epics:
+      - EP-001  # CLI Foundation (100%) ✓
+      - EP-002  # Core CRUD (100%) ✓
+      - EP-003  # Web UI (100%) ✓
+      - EP-004  # AI Integration (100%) ✓
+      - EP-005  # Git Operations (100%) ✓
+
+  - id: v1.1-usability
+    name: "v1.1 Usability"
+    description: "Import/Export, Simple Mode, AI Agents"
+    start_date: 2026-03-11
+    end_date: 2026-04-30
+    status: planned
+    epics:
+      - EP-006  # Import from Jira/Linear/Notion
+      - EP-007  # Export HTML/PDF
+      - EP-008  # Simple Mode
+      - EP-009  # AI Spec Drafting
+
+  - id: v1.2-ecosystem
+    name: "v1.2 Ecosystem"
+    description: "Plugins, Multi-repo, GitHub Sync"
+    start_date: 2026-05-01
+    end_date: 2026-06-30
+    status: planned
+    epics:
+      - EP-010  # Plugin System
+      - EP-011  # Multi-repo Portfolio
+      - EP-012  # GitHub Issues Sync
+      - EP-013  # VS Code Extension
+
+releases:
+  - version: "1.0.0"
+    milestone: v1.0-mvp
+    target_date: 2026-03-10
+    status: complete
+    highlights:
+      - "Single binary with bundled web UI"
+      - "Create/edit epics, specs, issues, decisions"
+      - "Natural language AI queries"
+      - "Git-native: every save is a commit"
+    completed:
+      - "CLI foundation with Commander.js + Clack"
+      - "Epic, Spec, Issue, Decision CRUD operations"
+      - "Dashboard UI with Hono + Alpine.js + Tailwind"
+      - "Roadmap timeline view"
+      - "Spec editor with live markdown preview"
+      - "AI chat panel with SSE streaming"
+      - "Git status panel (uncommitted/unpushed)"
+      - "Auto-commit on save in Web UI"
+      - "AI integration (OpenAI, Anthropic, Ollama)"
+      - "Full-text search with MiniSearch"
+      - "prodman status, sync, pull commands"
+      - "npm global install configuration"
+      - "pkg binary build scripts"
+      - "File explorer with tree view in Web UI"
+      - "Light/dark mode toggle with localStorage"
+      - "prodman diff command (colorized output)"
+      - "Conflict detection on git pull"
+      - "prodman resolve command for conflict resolution"
+      - "prodman conflicts command to list conflicts"
+      - "isomorphic-git integration (async functions)"
+
+  - version: "1.1.0"
+    milestone: v1.1-usability
+    target_date: 2026-04-30
+    status: planned
+    highlights:
+      - "Import from Jira, Linear, Notion"
+      - "Export to HTML, PDF, slides"
+      - "Simple mode for non-technical users"
+      - "AI-powered spec drafting"
+
+      - "Startup time benchmarked (160ms)"
+      - "README, ARCHITECTURE, LICENSE docs"
+
+updated_at: 2026-01-12

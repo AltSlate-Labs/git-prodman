@@ -1,0 +1,45 @@
+# Epic: Git Operations
+id: EP-005
+title: "Git Operations"
+status: complete
+priority: p0
+owner: null
+milestone: v1.0-mvp
+spec: null
+
+description: |
+  Implement Git operations using isomorphic-git for the 
+  commit-per-change model. Every save in the UI creates a commit. 
+  Users sync (push) when ready to share with team.
+
+acceptance_criteria:
+  - "[x] prodman sync pushes local commits to remote (via git CLI)"
+  - "[x] prodman pull fetches and merges remote changes (via git CLI)"
+  - "[x] prodman status shows pending (unpushed) commits"
+  - "[x] Every save in Web UI creates a Git commit"
+  - "[x] Auto-generated commit messages describe the change"
+  - "[x] src/core/git.ts module with Git operations"
+  - "[x] prodman diff shows uncommitted changes (colorized)"
+  - "[x] Conflict detection on pull (pullWithConflictDetection)"
+  - "[x] prodman resolve command for CLI conflict resolution"
+  - "[x] prodman conflicts lists files with merge conflicts"
+  - "[x] isomorphic-git integration (async functions added)"
+  - "[x] Never corrupts Git repository (dogfooded in this repo)"
+  - "[x] Works with repos that have other content (tested)"
+
+progress: 100
+
+dependencies:
+  - EP-001  # CLI Foundation
+  - EP-003  # Web UI
+
+issues: []
+
+labels:
+  - git
+  - isomorphic-git
+  - sync
+
+target_date: 2026-03-03
+created_at: 2026-01-11
+updated_at: 2026-01-12

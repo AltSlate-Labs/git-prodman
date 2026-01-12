@@ -1,0 +1,47 @@
+# Epic: GitHub Issues Sync
+id: EP-012
+title: "GitHub Issues Sync"
+status: planned
+priority: p1
+owner: null
+milestone: v1.2-ecosystem
+spec: null
+
+description: |
+  Two-way sync between git-prodman issues and GitHub Issues. Teams
+  can use GitHub Issues for external contributors while maintaining
+  git-prodman as the internal source of truth. Changes sync
+  automatically or on-demand.
+
+acceptance_criteria:
+  - "[ ] prodman github connect authenticates with GitHub"
+  - "[ ] prodman github sync pushes issues to GitHub"
+  - "[ ] prodman github sync pulls issues from GitHub"
+  - "[ ] Two-way sync (bidirectional updates)"
+  - "[ ] Conflict resolution for concurrent edits"
+  - "[ ] Map prodman epics to GitHub milestones"
+  - "[ ] Map prodman labels to GitHub labels"
+  - "[ ] Map prodman status to GitHub issue state"
+  - "[ ] Sync comments (optional)"
+  - "[ ] Webhook support for real-time sync"
+  - "[ ] GitHub Actions integration"
+  - "[ ] Support for GitHub Enterprise"
+  - "[ ] Dry-run mode for sync preview"
+
+progress: 0
+
+dependencies:
+  - EP-002  # Core CRUD
+  - EP-005  # Git Operations
+
+issues: []
+
+labels:
+  - github
+  - sync
+  - integration
+  - issues
+
+target_date: 2026-06-15
+created_at: 2026-01-12
+updated_at: 2026-01-12

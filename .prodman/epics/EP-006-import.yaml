@@ -1,0 +1,43 @@
+# Epic: Import from External Tools
+id: EP-006
+title: "Import from Jira/Linear/Notion"
+status: planned
+priority: p1
+owner: null
+milestone: v1.1-usability
+spec: null
+
+description: |
+  Allow users to import existing product artifacts from popular tools
+  like Jira, Linear, and Notion. This reduces migration friction and
+  lets teams gradually adopt git-prodman without losing existing work.
+
+acceptance_criteria:
+  - "[ ] prodman import jira --project <key> imports Jira epics/issues"
+  - "[ ] prodman import linear --team <id> imports Linear issues"
+  - "[ ] prodman import notion --page <url> imports Notion pages as specs"
+  - "[ ] Imports create proper .prodman/ files (YAML/MD)"
+  - "[ ] Each import creates a single commit with all imported items"
+  - "[ ] Duplicate detection (skip already-imported items)"
+  - "[ ] Dry-run mode (--dry-run) to preview without changes"
+  - "[ ] Progress indicator for large imports"
+  - "[ ] Error handling for API failures"
+  - "[ ] Documentation for API token setup"
+
+progress: 0
+
+dependencies:
+  - EP-002  # Core CRUD (for file writing)
+
+issues: []
+
+labels:
+  - import
+  - jira
+  - linear
+  - notion
+  - migration
+
+target_date: 2026-04-01
+created_at: 2026-01-12
+updated_at: 2026-01-12

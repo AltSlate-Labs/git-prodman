@@ -1,0 +1,48 @@
+# Epic: AI Integration
+id: EP-004
+title: "AI Integration"
+status: complete
+priority: p0
+owner: null
+milestone: v1.0-mvp
+spec: null
+
+description: |
+  Integrate AI capabilities using official TypeScript SDKs 
+  (openai, @anthropic-ai/sdk, ollama) for natural language 
+  queries about the product context.
+
+acceptance_criteria:
+  - "[x] prodman config set configures AI provider interactively"
+  - "[x] prodman provider set <name> configures AI provider"
+  - "[x] prodman provider test verifies API connection"
+  - "[x] prodman ask '<query>' answers using product context"
+  - "[x] prodman '<query>' (bare query) delegates to AI"
+  - "[x] Context includes product.yaml, roadmap.yaml, epics, specs"
+  - "[x] Works with OpenAI API (openai package)"
+  - "[x] Works with Anthropic API (@anthropic-ai/sdk)"
+  - "[x] Works with local Ollama (ollama package)"
+  - "[x] Graceful error when AI unavailable"
+  - "[x] API keys stored in user config (not repo)"
+  - "[x] AI chat panel in Web UI works"
+  - "[x] Responses stream via SSE in real-time"
+
+progress: 100
+
+dependencies:
+  - EP-001  # CLI Foundation
+  - EP-003  # Web UI (for chat panel)
+
+issues: []
+
+labels:
+  - ai
+  - llm
+  - anthropic
+  - openai
+  - ollama
+  - typescript
+
+target_date: 2026-02-24
+created_at: 2026-01-11
+updated_at: 2026-01-11

@@ -1,0 +1,25 @@
+# Epic Template
+id: {{ID}}
+title: "{{TITLE}}"
+status: planned
+priority: p1
+owner: null
+milestone: null
+spec: null
+
+description: |
+  [Describe the epic here]
+
+acceptance_criteria:
+  - "[Criterion 1]"
+  - "[Criterion 2]"
+
+dependencies: []
+
+issues: []
+
+labels: []
+
+target_date: null
+created_at: {{CREATED_AT}}
+updated_at: {{CREATED_AT}}

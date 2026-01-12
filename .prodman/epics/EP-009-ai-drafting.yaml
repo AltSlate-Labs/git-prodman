@@ -1,0 +1,47 @@
+# Epic: AI Spec Drafting
+id: EP-009
+title: "AI-Powered Spec Drafting"
+status: planned
+priority: p1
+owner: null
+milestone: v1.1-usability
+spec: null
+
+description: |
+  Use AI to help draft product specs from minimal input. Users describe
+  what they want in natural language, and the AI generates a structured
+  spec document following the project's conventions. This dramatically
+  speeds up spec writing while maintaining consistency.
+
+acceptance_criteria:
+  - "[ ] prodman draft 'user auth with OAuth' generates spec draft"
+  - "[ ] AI follows existing spec template structure"
+  - "[ ] Generated specs include proper frontmatter"
+  - "[ ] AI considers existing epics/specs for context"
+  - "[ ] Interactive refinement (ask follow-up questions)"
+  - "[ ] prodman draft --epic EP-001 scopes to specific epic"
+  - "[ ] Draft appears in editor for review before saving"
+  - "[ ] Web UI: 'Draft with AI' button in specs view"
+  - "[ ] Support for different spec types (technical, user story)"
+  - "[ ] AI suggests related epics and dependencies"
+  - "[ ] Works with all configured AI providers"
+  - "[ ] Streaming output for long generations"
+
+progress: 0
+
+dependencies:
+  - EP-004  # AI Integration
+  - EP-002  # Core CRUD (for spec creation)
+
+issues: []
+
+labels:
+  - ai
+  - drafting
+  - specs
+  - automation
+  - llm
+
+target_date: 2026-04-30
+created_at: 2026-01-12
+updated_at: 2026-01-12

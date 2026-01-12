@@ -1,0 +1,45 @@
+# Epic: Simple Mode
+id: EP-008
+title: "Simple Mode for Non-Technical Users"
+status: planned
+priority: p2
+owner: null
+milestone: v1.1-usability
+spec: null
+
+description: |
+  Provide a simplified interface for product managers and stakeholders
+  who aren't comfortable with Git or command-line tools. The Web UI
+  becomes the primary interface, with Git operations hidden behind
+  simple "Save" and "Sync" buttons.
+
+acceptance_criteria:
+  - "[ ] prodman ui --simple starts simplified Web UI"
+  - "[ ] Hide Git jargon (commits → saves, push → sync)"
+  - "[ ] One-click sync button (handles add, commit, push)"
+  - "[ ] Conflict resolution wizard (visual, no git commands)"
+  - "[ ] Onboarding flow for first-time users"
+  - "[ ] Inline help tooltips throughout UI"
+  - "[ ] No terminal/CLI knowledge required"
+  - "[ ] Auto-save with background commits"
+  - "[ ] Undo/redo using Git history (hidden from user)"
+  - "[ ] Desktop app wrapper (Electron/Tauri) - optional"
+  - "[ ] Settings panel replaces config command"
+
+progress: 0
+
+dependencies:
+  - EP-003  # Web UI
+  - EP-005  # Git Operations
+
+issues: []
+
+labels:
+  - ux
+  - simple-mode
+  - non-technical
+  - onboarding
+
+target_date: 2026-04-20
+created_at: 2026-01-12
+updated_at: 2026-01-12

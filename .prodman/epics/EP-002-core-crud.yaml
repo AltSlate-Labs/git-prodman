@@ -1,0 +1,47 @@
+# Epic: Core CRUD Operations
+id: EP-002
+title: "Core CRUD Operations"
+status: complete
+priority: p0
+owner: null
+milestone: v1.0-mvp
+spec: null
+
+description: |
+  Implement create, read, update, delete operations for all 
+  core product artifacts: epics, specs, issues, and decisions.
+
+acceptance_criteria:
+  - "[x] prodman epic create creates new epic YAML file"
+  - "[x] prodman epic list shows all epics with status"
+  - "[x] prodman epic show <id> displays epic details"
+  - "[x] prodman epic update <id> updates epic fields"
+  - "[x] prodman spec create creates new spec markdown file"
+  - "[x] prodman spec list shows all specs"
+  - "[x] prodman spec show <id> displays spec details"
+  - "[x] prodman issue create creates new issue file"
+  - "[x] prodman issue list shows all issues with filters"
+  - "[x] prodman issue show <id> displays issue details"
+  - "[x] prodman decision create creates numbered ADR"
+  - "[x] prodman decision list shows all decisions"
+  - "[x] prodman decision show <id> displays decision details"
+  - "[x] All commands validate YAML/MD schema"
+  - "[x] Helpful error messages for invalid input"
+
+progress: 100
+
+dependencies:
+  - EP-001  # CLI Foundation
+
+issues: []
+
+labels:
+  - crud
+  - cli
+  - yaml
+  - gray-matter
+  - typescript
+
+target_date: 2026-02-10
+created_at: 2026-01-11
+updated_at: 2026-01-11

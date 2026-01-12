@@ -1,0 +1,45 @@
+# Epic: Plugin System
+id: EP-010
+title: "Plugin System"
+status: planned
+priority: p1
+owner: null
+milestone: v1.2-ecosystem
+spec: null
+
+description: |
+  Create an extensible plugin architecture that allows the community
+  to build custom commands, integrations, and UI components. Plugins
+  should be easy to install, configure, and share via npm.
+
+acceptance_criteria:
+  - "[ ] prodman plugin install <name> installs from npm"
+  - "[ ] prodman plugin list shows installed plugins"
+  - "[ ] prodman plugin remove <name> uninstalls plugin"
+  - "[ ] Plugins can add custom CLI commands"
+  - "[ ] Plugins can add custom API endpoints"
+  - "[ ] Plugins can add custom UI tabs/panels"
+  - "[ ] Plugin configuration in .prodman/config.yaml"
+  - "[ ] Plugin lifecycle hooks (onInit, onSave, onSync)"
+  - "[ ] Plugin template/scaffolding (prodman plugin create)"
+  - "[ ] Plugin documentation and examples"
+  - "[ ] Security: plugins run in sandbox (limited fs access)"
+  - "[ ] Official plugin registry/discovery"
+
+progress: 0
+
+dependencies:
+  - EP-001  # CLI Foundation
+  - EP-003  # Web UI
+
+issues: []
+
+labels:
+  - plugins
+  - extensibility
+  - ecosystem
+  - architecture
+
+target_date: 2026-05-15
+created_at: 2026-01-12
+updated_at: 2026-01-12

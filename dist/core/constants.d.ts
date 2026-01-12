@@ -1,0 +1,30 @@
+export declare const VERSION = "0.1.0";
+export declare const PRODMAN_DIR = ".prodman";
+export declare const PRODMAN_FILES: {
+    readonly config: "config.yaml";
+    readonly product: "product.yaml";
+    readonly roadmap: "roadmap.yaml";
+    readonly agents: "agents.yaml";
+};
+export declare const PRODMAN_DIRS: {
+    readonly epics: "epics";
+    readonly specs: "specs";
+    readonly decisions: "decisions";
+    readonly templates: "templates";
+    readonly issues: "issues";
+};
+export declare const DEFAULT_CONFIG_PATH = "~/.config/prodman/config.yaml";
+export declare const AI_PROVIDERS: readonly ["openai", "anthropic", "ollama"];
+export type AIProvider = (typeof AI_PROVIDERS)[number];
+export declare const EPIC_STATUSES: readonly ["planned", "planning", "in_progress", "complete", "cancelled"];
+export type EpicStatus = (typeof EPIC_STATUSES)[number];
+export declare const SPEC_STATUSES: readonly ["draft", "review", "approved", "implemented"];
+export type SpecStatus = (typeof SPEC_STATUSES)[number];
+export declare const PRIORITIES: readonly ["p0", "p1", "p2", "p3"];
+export type Priority = (typeof PRIORITIES)[number];
+export declare const ISSUE_STATUSES: readonly ["open", "in_progress", "resolved", "closed", "wontfix"];
+export type IssueStatus = (typeof ISSUE_STATUSES)[number];
+export declare const ISSUE_TYPES: readonly ["bug", "feature", "task", "improvement"];
+export type IssueType = (typeof ISSUE_TYPES)[number];
+export declare const DECISION_STATUSES: readonly ["proposed", "accepted", "rejected", "superseded", "deprecated"];
+export type DecisionStatus = (typeof DECISION_STATUSES)[number];

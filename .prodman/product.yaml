@@ -1,0 +1,73 @@
+# Product Definition for git-prodman
+schema_version: 1
+
+name: "git-prodman"
+tagline: "Product management that lives in your Git repo"
+description: |
+  A local-first, AI-native product management tool where the Git 
+  repository IS the database. Single binary, bundled web UI, 
+  MIT licensed. No cloud, no accounts, no bullshit.
+
+vision: |
+  Make product management invisible by embedding it directly into 
+  the development workflow. Every spec, decision, and roadmap item 
+  lives alongside the code it describes.
+
+principles:
+  - id: async-first
+    name: "Async-First"
+    description: "Git's commit→push→pull model. No real-time collaboration."
+    
+  - id: local-only
+    name: "Local-Only"
+    description: "All data stays on user's machine. No telemetry, no accounts."
+    
+  - id: mit-licensed
+    name: "MIT Licensed"
+    description: "100% open source. Fork it, modify it, sell it."
+    
+  - id: ai-optional
+    name: "AI-Optional"
+    description: "Works without AI. Bring your own API keys or use local models."
+
+okrs:
+  - quarter: "2026-Q1"
+    objective: "Ship v1.0 MVP and validate product-market fit"
+    key_results:
+      - metric: "github_stars"
+        target: 1000
+        current: 0
+      - metric: "weekly_installs"
+        target: 500
+        current: 0
+      - metric: "repos_with_prodman"
+        target: 100
+        current: 1  # This one!
+      - metric: "nps_score"
+        target: 40
+        current: null
+
+target_users:
+  - id: open-source-maintainer
+    name: "Open Source Maintainer"
+    priority: primary
+    
+  - id: startup-pm
+    name: "Startup PM/Founder"
+    priority: secondary
+    
+  - id: indie-hacker
+    name: "Indie Hacker / Solo Dev"
+    priority: tertiary
+    
+  - id: privacy-conscious
+    name: "Privacy-Conscious Teams"
+    priority: tertiary
+
+links:
+  repository: "https://github.com/git-prodman/git-prodman"
+  website: "https://git-prodman.dev"
+  discussions: "https://github.com/git-prodman/git-prodman/discussions"
+
+created_at: 2026-01-11
+updated_at: 2026-01-11

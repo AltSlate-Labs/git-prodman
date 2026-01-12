@@ -1,0 +1,24 @@
+# git-prodman Repository Configuration
+schema_version: 1
+
+project:
+  name: "git-prodman"
+  description: "Git-native product management tool"
+  default_branch: main
+
+sync:
+  remote: origin
+  auto_push: false
+  branch_strategy: direct  # or "pr" for review workflow
+
+templates:
+  epic: ".prodman/templates/epic.yaml"
+  spec: ".prodman/templates/spec.md"
+  decision: ".prodman/templates/decision.md"
+
+# ID auto-increment counters
+counters:
+  epic: 5      # Next: EP-006
+  spec: 1      # Next: SPEC-002
+  decision: 0  # Next: DEC-001
+  issue: 0     # Next: ISS-001

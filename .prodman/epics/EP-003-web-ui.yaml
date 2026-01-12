@@ -1,0 +1,49 @@
+# Epic: Web UI
+id: EP-003
+title: "Bundled Web UI"
+status: complete
+priority: p0
+owner: null
+milestone: v1.0-mvp
+spec: null
+
+description: |
+  Build a web-based UI using React + Tailwind that is bundled 
+  with the CLI. Served via Hono. The UI provides visual editing 
+  and navigation of product artifacts.
+
+acceptance_criteria:
+  - "[x] prodman ui starts local Hono web server"
+  - "[x] prodman ui --port <n> allows custom port"
+  - "[x] Dashboard shows project overview with stats"
+  - "[x] Epics list view with status badges"
+  - "[x] Specs list view"
+  - "[x] API endpoints for epics and specs"
+  - "[x] Roadmap view displays timeline of milestones"
+  - "[x] Spec editor with markdown preview (split view)"
+  - "[x] Pending commits panel shows uncommitted changes"
+  - "[x] Git status panel (branch, uncommitted, unpushed)"
+  - "[x] AI chat panel with streaming responses"
+  - "[x] UI loads in < 2 seconds"
+  - "[x] UI is responsive (works on tablet widths)"
+  - "[x] Dark mode by default"
+  - "[x] File explorer shows .prodman/ tree structure"
+  - "[x] Light mode toggle with localStorage persistence"
+
+progress: 100
+
+dependencies:
+  - EP-001  # CLI Foundation
+  - EP-002  # Core CRUD
+
+issues: []
+
+labels:
+  - web-ui
+  - alpine-js
+  - tailwind
+  - hono
+
+target_date: 2026-02-24
+created_at: 2026-01-11
+updated_at: 2026-01-12
