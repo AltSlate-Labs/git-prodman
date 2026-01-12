@@ -18,7 +18,7 @@ templates:
 
 # ID auto-increment counters
 counters:
-  epic: 5      # Next: EP-006
+  epic: 14     # Next: EP-015
   spec: 1      # Next: SPEC-002
   decision: 0  # Next: DEC-001
-  issue: 0     # Next: ISS-001
+  issue: 1     # Next: ISS-002

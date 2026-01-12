@@ -1,0 +1,49 @@
+# Epic: Kanban Board
+id: EP-014
+title: "Kanban Board for Epics and Issues"
+status: planned
+priority: p1
+owner: null
+milestone: v1.1-usability
+spec: null
+
+description: |
+  Add a Kanban board view to the web UI that visualizes epics and
+  issues across their status columns. Provides drag-and-drop interface
+  for moving items between statuses, filtering by priority/milestone,
+  and quick inline editing.
+
+acceptance_criteria:
+  - "[ ] Kanban board route added to web UI (/kanban)"
+  - "[ ] Epic board view with columns: planned, planning, in_progress, complete, cancelled"
+  - "[ ] Issue board view with columns: open, in_progress, resolved, closed"
+  - "[ ] Toggle between Epic and Issue board views"
+  - "[ ] Drag-and-drop to move cards between columns"
+  - "[ ] Status updates persist to YAML files and auto-commit"
+  - "[ ] Card displays: ID, title, priority badge, assignee/owner"
+  - "[ ] Filter by priority (p0, p1, p2, p3)"
+  - "[ ] Filter by milestone"
+  - "[ ] Click card to open detail modal with quick edit"
+  - "[ ] Swimlanes by milestone (optional view toggle)"
+  - "[ ] WIP limits configurable per column (optional)"
+  - "[ ] Card count badges on column headers"
+  - "[ ] Responsive layout (stacks columns on mobile)"
+  - "[ ] Dark mode support consistent with rest of UI"
+
+progress: 0
+
+dependencies:
+  - EP-003  # Web UI Foundation
+
+issues: []
+
+labels:
+  - web-ui
+  - kanban
+  - alpine-js
+  - drag-drop
+  - visualization
+
+target_date: 2026-04-30
+created_at: 2026-01-12
+updated_at: 2026-01-12

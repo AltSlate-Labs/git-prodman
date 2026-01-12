@@ -18,7 +18,7 @@ milestones:
 
   - id: v1.1-usability
     name: "v1.1 Usability"
-    description: "Import/Export, Simple Mode, AI Agents"
+    description: "Import/Export, Simple Mode, AI Agents, Kanban Board"
     start_date: 2026-03-11
     end_date: 2026-04-30
     status: planned
@@ -27,6 +27,7 @@ milestones:
       - EP-007  # Export HTML/PDF
       - EP-008  # Simple Mode
       - EP-009  # AI Spec Drafting
+      - EP-014  # Kanban Board
 
   - id: v1.2-ecosystem
     name: "v1.2 Ecosystem"
@@ -81,6 +82,7 @@ releases:
       - "Export to HTML, PDF, slides"
       - "Simple mode for non-technical users"
       - "AI-powered spec drafting"
+      - "Kanban board for epics and issues"
 
       - "Startup time benchmarked (160ms)"
       - "README, ARCHITECTURE, LICENSE docs"
