@@ -8,7 +8,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from "fs";
 import { join } from "path";
 import { homedir } from "os";
 import YAML from "yaml";
-import { findProdmanRoot, readConfig, readEpics, readSpecs, writeSpec, getProdmanPath, } from "../../core/fs.js";
+import { findProdmanRoot, readConfig, readEpics, readSpecs, writeSpec, getProdmanPath, readIssues, writeEpic, writeIssue, } from "../../core/fs.js";
 import { VERSION, PRODMAN_FILES } from "../../core/constants.js";
 import { getGitStatus, commitChange, generateCommitMessage, getConflicts, resolveConflict, } from "../../core/git.js";
 const USER_CONFIG_PATH = join(homedir(), ".config", "prodman", "config.yaml");
@@ -89,6 +89,15 @@ function createApp(root) {
             return c.json({ error: "Epic not found" }, 404);
         return c.json(epic);
     });
+    // Issues API
+    app.get("/api/issues", (c) => c.json(readIssues(root)));
+    app.get("/api/issues/:id", (c) => {
+        const issues = readIssues(root);
+        const issue = issues.find((i) => i.id.toUpperCase() === c.req.param("id").toUpperCase());
+        if (!issue)
+            return c.json({ error: "Issue not found" }, 404);
+        return c.json(issue);
+    });
     app.get("/api/specs", (c) => c.json(readSpecs(root)));
     app.get("/api/specs/:id", (c) => {
         const specs = readSpecs(root);
@@ -123,6 +132,66 @@ function createApp(root) {
             }
             catch { }
             return c.json({ success: true, spec: updated });
+        }
+        catch (e) {
+            return c.json({ error: e.message }, 500);
+        }
+    });
+    // Save epic with auto-commit (for Kanban)
+    app.put("/api/epics/:id", async (c) => {
+        try {
+            const id = c.req.param("id").toUpperCase();
+            const body = await c.req.json();
+            const epics = readEpics(root);
+            const existing = epics.find((e) => e.id.toUpperCase() === id);
+            if (!existing)
+                return c.json({ error: "Epic not found" }, 404);
+            const updated = {
+                ...existing,
+                status: body.status || existing.status,
+                priority: body.priority || existing.priority,
+                owner: body.owner !== undefined ? body.owner : existing.owner,
+                milestone: body.milestone !== undefined ? body.milestone : existing.milestone,
+                updated_at: new Date().toISOString().split("T")[0],
+            };
+            const filepath = writeEpic(root, updated);
+            const relPath = filepath.replace(root + "/", "");
+            try {
+                const msg = generateCommitMessage(relPath, "update");
+                commitChange(root, relPath, msg);
+            }
+            catch { }
+            return c.json({ success: true, epic: updated });
+        }
+        catch (e) {
+            return c.json({ error: e.message }, 500);
+        }
+    });
+    // Save issue with auto-commit (for Kanban)
+    app.put("/api/issues/:id", async (c) => {
+        try {
+            const id = c.req.param("id").toUpperCase();
+            const body = await c.req.json();
+            const issues = readIssues(root);
+            const existing = issues.find((i) => i.id.toUpperCase() === id);
+            if (!existing)
+                return c.json({ error: "Issue not found" }, 404);
+            const updated = {
+                ...existing,
+                status: body.status || existing.status,
+                priority: body.priority || existing.priority,
+                assignee: body.assignee !== undefined ? body.assignee : existing.assignee,
+                epic: body.epic !== undefined ? body.epic : existing.epic,
+                updated_at: new Date().toISOString().split("T")[0],
+            };
+            const filepath = writeIssue(root, updated);
+            const relPath = filepath.replace(root + "/", "");
+            try {
+                const msg = generateCommitMessage(relPath, "update");
+                commitChange(root, relPath, msg);
+            }
+            catch { }
+            return c.json({ success: true, issue: updated });
         }
         catch (e) {
             return c.json({ error: e.message }, 500);
@@ -320,6 +389,7 @@ function getDashboardHTML(root) {
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap">
   <style>
     :root {
@@ -367,6 +437,10 @@ function getDashboardHTML(root) {
     .chat-msg { animation: fadeIn 0.2s ease-out; }
     .tree-item { cursor: pointer; user-select: none; }
     .tree-item:hover { background: var(--bg-tertiary); }
+    .kanban-card { cursor: grab; }
+    .kanban-card:active { cursor: grabbing; }
+    .sortable-ghost { opacity: 0.4; background: var(--bg-tertiary); }
+    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
@@ -398,12 +472,12 @@ function getDashboardHTML(root) {
     <!-- Navigation -->
     <nav class="border-b border-base px-6" style="background: var(--bg-secondary);">
       <div class="flex gap-1">
-        <template x-for="t in ['dashboard', 'roadmap', 'epics', 'specs', 'files', 'ai']">
-          <button 
-            @click="tab = t; if(t === 'specs') loadSpecs(); if(t === 'files') loadFiles();"
+        <template x-for="t in ['dashboard', 'roadmap', 'epics', 'specs', 'kanban', 'files', 'ai']">
+          <button
+            @click="tab = t; if(t === 'specs') loadSpecs(); if(t === 'files') loadFiles(); if(t === 'kanban') loadKanban();"
             :class="tab === t ? 'border-cyan-400 text-cyan-400' : 'border-transparent text-muted hover:text-base'"
             class="px-4 py-3 border-b-2 text-sm font-medium transition-all capitalize"
-            x-text="t === 'dashboard' ? '📊 Dashboard' : t === 'roadmap' ? '🗺️ Roadmap' : t === 'epics' ? '🎯 Epics' : t === 'specs' ? '📝 Specs' : t === 'files' ? '📁 Files' : '🤖 AI'"
+            x-text="t === 'dashboard' ? '📊 Dashboard' : t === 'roadmap' ? '🗺️ Roadmap' : t === 'epics' ? '🎯 Epics' : t === 'specs' ? '📝 Specs' : t === 'kanban' ? '📋 Kanban' : t === 'files' ? '📁 Files' : '🤖 AI'"
           ></button>
         </template>
       </div>
@@ -602,6 +676,141 @@ function getDashboardHTML(root) {
         </div>
       </div>
 
+      <!-- Kanban Tab -->
+      <div x-show="tab === 'kanban'">
+        <div class="flex items-center justify-between mb-6">
+          <h1 class="text-2xl font-bold">Kanban Board</h1>
+          <div class="flex items-center gap-3">
+            <div class="flex gap-1 bg-card rounded-lg p-1 border border-base">
+              <button @click="kanbanView = 'epics'; loadKanban();" :class="kanbanView === 'epics' ? 'bg-cyan-600 text-white' : 'text-muted hover:text-base'" class="px-3 py-1.5 rounded text-sm font-medium transition-colors">Epics</button>
+              <button @click="kanbanView = 'issues'; loadKanban();" :class="kanbanView === 'issues' ? 'bg-cyan-600 text-white' : 'text-muted hover:text-base'" class="px-3 py-1.5 rounded text-sm font-medium transition-colors">Issues</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="flex gap-3 mb-6">
+          <select x-model="kanbanFilters.priority" @change="$nextTick(() => initKanbanDragDrop())" class="bg-card border border-base rounded-lg px-3 py-2 text-sm">
+            <option value="">All Priorities</option>
+            <option value="p0">P0 - Critical</option>
+            <option value="p1">P1 - High</option>
+            <option value="p2">P2 - Medium</option>
+            <option value="p3">P3 - Low</option>
+          </select>
+          <select x-model="kanbanFilters.milestone" @change="$nextTick(() => initKanbanDragDrop())" class="bg-card border border-base rounded-lg px-3 py-2 text-sm">
+            <option value="">All Milestones</option>
+            <template x-for="m in kanbanMilestones" :key="m">
+              <option :value="m" x-text="m"></option>
+            </template>
+          </select>
+          <button @click="kanbanFilters = { priority: '', milestone: '' }; $nextTick(() => initKanbanDragDrop());" class="px-3 py-2 text-sm text-muted hover:text-base transition-colors">Clear Filters</button>
+        </div>
+
+        <!-- Epic Columns -->
+        <div x-show="kanbanView === 'epics'" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <template x-for="status in ['planned', 'planning', 'in_progress', 'complete', 'cancelled']" :key="status">
+            <div class="bg-card rounded-xl border border-base flex flex-col">
+              <div class="px-4 py-3 border-b border-base flex items-center justify-between">
+                <span class="text-sm font-semibold capitalize" x-text="status.replace('_', ' ')"></span>
+                <span class="px-2 py-0.5 rounded-full text-xs bg-hover" x-text="getFilteredKanbanItems(status).length"></span>
+              </div>
+              <div :data-status="status" class="kanban-column flex-1 p-3 space-y-3 min-h-[200px]">
+                <template x-for="epic in getFilteredKanbanItems(status)" :key="epic.id">
+                  <div :data-id="epic.id" @click="openKanbanDetail(epic)" class="kanban-card bg-hover rounded-lg p-3 border border-base cursor-pointer hover:border-cyan-500 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                      <span class="text-cyan-400 font-mono text-xs" x-text="epic.id"></span>
+                      <span :class="getPriorityBadgeClass(epic.priority)" class="px-2 py-0.5 rounded text-xs font-medium" x-text="epic.priority.toUpperCase()"></span>
+                    </div>
+                    <div class="text-sm font-medium mb-2 line-clamp-2" x-text="epic.title"></div>
+                    <div class="flex items-center justify-between text-xs text-muted">
+                      <span x-text="epic.milestone || 'No milestone'"></span>
+                      <span x-show="epic.owner" x-text="epic.owner"></span>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </template>
+        </div>
+
+        <!-- Issue Columns -->
+        <div x-show="kanbanView === 'issues'" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <template x-for="status in ['open', 'in_progress', 'resolved', 'closed']" :key="status">
+            <div class="bg-card rounded-xl border border-base flex flex-col">
+              <div class="px-4 py-3 border-b border-base flex items-center justify-between">
+                <span class="text-sm font-semibold capitalize" x-text="status.replace('_', ' ')"></span>
+                <span class="px-2 py-0.5 rounded-full text-xs bg-hover" x-text="getFilteredKanbanItems(status).length"></span>
+              </div>
+              <div :data-status="status" class="kanban-column flex-1 p-3 space-y-3 min-h-[200px]">
+                <template x-for="issue in getFilteredKanbanItems(status)" :key="issue.id">
+                  <div :data-id="issue.id" @click="openKanbanDetail(issue)" class="kanban-card bg-hover rounded-lg p-3 border border-base cursor-pointer hover:border-cyan-500 transition-all">
+                    <div class="flex items-start justify-between mb-2">
+                      <span class="text-cyan-400 font-mono text-xs" x-text="issue.id"></span>
+                      <span :class="getPriorityBadgeClass(issue.priority)" class="px-2 py-0.5 rounded text-xs font-medium" x-text="issue.priority.toUpperCase()"></span>
+                    </div>
+                    <div class="text-sm font-medium mb-2 line-clamp-2" x-text="issue.title"></div>
+                    <div class="flex items-center justify-between text-xs text-muted">
+                      <span x-show="issue.epic" x-text="issue.epic"></span>
+                      <span x-show="issue.assignee" x-text="issue.assignee"></span>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- Kanban Detail Modal -->
+      <div x-show="kanbanDetailOpen" @click.self="kanbanDetailOpen = false" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50" style="display: none;">
+        <div @click.stop class="bg-card rounded-xl border border-base max-w-2xl w-full mx-4 max-h-[80vh] overflow-auto">
+          <template x-if="kanbanDetailItem">
+            <div class="p-6">
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <span class="text-cyan-400 font-mono text-sm" x-text="kanbanDetailItem.id"></span>
+                  <h2 class="text-xl font-bold" x-text="kanbanDetailItem.title"></h2>
+                </div>
+                <button @click="kanbanDetailOpen = false" class="text-muted hover:text-base text-xl">&times;</button>
+              </div>
+              <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label class="text-xs text-muted block mb-1">Status</label>
+                  <select x-model="kanbanDetailItem.status" class="w-full bg-hover border border-base rounded-lg px-3 py-2 text-sm">
+                    <template x-if="kanbanView === 'epics'">
+                      <template x-for="s in ['planned', 'planning', 'in_progress', 'complete', 'cancelled']">
+                        <option :value="s" x-text="s.replace('_', ' ')" class="capitalize"></option>
+                      </template>
+                    </template>
+                    <template x-if="kanbanView === 'issues'">
+                      <template x-for="s in ['open', 'in_progress', 'resolved', 'closed', 'wontfix']">
+                        <option :value="s" x-text="s.replace('_', ' ')" class="capitalize"></option>
+                      </template>
+                    </template>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-xs text-muted block mb-1">Priority</label>
+                  <select x-model="kanbanDetailItem.priority" class="w-full bg-hover border border-base rounded-lg px-3 py-2 text-sm">
+                    <option value="p0">P0 - Critical</option>
+                    <option value="p1">P1 - High</option>
+                    <option value="p2">P2 - Medium</option>
+                    <option value="p3">P3 - Low</option>
+                  </select>
+                </div>
+              </div>
+              <div class="flex justify-end gap-3">
+                <button @click="kanbanDetailOpen = false" class="px-4 py-2 text-sm text-muted hover:text-base transition-colors">Cancel</button>
+                <button @click="saveKanbanDetail()" :disabled="kanbanSaving" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 rounded-lg text-sm font-medium transition-colors">
+                  <span x-show="!kanbanSaving">Save Changes</span>
+                  <span x-show="kanbanSaving">Saving...</span>
+                </button>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+
       <!-- AI Tab -->
       <div x-show="tab === 'ai'">
         <h1 class="text-2xl font-bold mb-6">AI Assistant</h1>
@@ -653,6 +862,17 @@ function getDashboardHTML(root) {
         chatInput: '',
         streaming: false,
         streamingContent: '',
+
+        // Kanban state
+        kanbanView: 'epics',
+        kanbanEpics: [],
+        kanbanIssues: [],
+        kanbanFilters: { priority: '', milestone: '' },
+        kanbanMilestones: [],
+        kanbanDetailOpen: false,
+        kanbanDetailItem: null,
+        kanbanSaving: false,
+        sortableInstances: [],
 
         init() {
           document.documentElement.setAttribute('data-theme', this.theme);
@@ -722,6 +942,110 @@ function getDashboardHTML(root) {
 
         getSpecStatusClass(status) {
           return { draft: 'bg-gray-700 text-gray-300', review: 'bg-yellow-900/50 text-yellow-300', approved: 'bg-blue-900/50 text-blue-300', implemented: 'bg-emerald-900/50 text-emerald-300' }[status] || 'bg-gray-700 text-gray-300';
+        },
+
+        // Kanban methods
+        async loadKanban() {
+          if (this.kanbanView === 'epics') {
+            this.kanbanEpics = await fetch('/api/epics').then(r => r.json());
+            this.kanbanMilestones = [...new Set(this.kanbanEpics.map(e => e.milestone).filter(Boolean))];
+          } else {
+            this.kanbanIssues = await fetch('/api/issues').then(r => r.json());
+            const epics = await fetch('/api/epics').then(r => r.json());
+            this.kanbanMilestones = [...new Set(epics.map(e => e.milestone).filter(Boolean))];
+          }
+          this.$nextTick(() => this.initKanbanDragDrop());
+        },
+
+        getFilteredKanbanItems(status) {
+          const items = this.kanbanView === 'epics' ? this.kanbanEpics : this.kanbanIssues;
+          return items.filter(item => {
+            const statusMatch = item.status === status;
+            const priorityMatch = !this.kanbanFilters.priority || item.priority === this.kanbanFilters.priority;
+            let milestoneMatch = true;
+            if (this.kanbanFilters.milestone) {
+              if (this.kanbanView === 'epics') {
+                milestoneMatch = item.milestone === this.kanbanFilters.milestone;
+              } else {
+                const epic = this.kanbanEpics.find(e => e.id === item.epic);
+                milestoneMatch = epic?.milestone === this.kanbanFilters.milestone;
+              }
+            }
+            return statusMatch && priorityMatch && milestoneMatch;
+          });
+        },
+
+        getPriorityBadgeClass(priority) {
+          const classes = { p0: 'bg-red-900/50 text-red-300', p1: 'bg-orange-900/50 text-orange-300', p2: 'bg-yellow-900/50 text-yellow-300', p3: 'bg-blue-900/50 text-blue-300' };
+          return classes[priority] || 'bg-gray-700 text-gray-300';
+        },
+
+        initKanbanDragDrop() {
+          this.sortableInstances.forEach(instance => instance?.destroy());
+          this.sortableInstances = [];
+          const statuses = this.kanbanView === 'epics' ? ['planned', 'planning', 'in_progress', 'complete', 'cancelled'] : ['open', 'in_progress', 'resolved', 'closed'];
+          statuses.forEach(status => {
+            const columnEl = document.querySelector('[data-status="' + status + '"]');
+            if (!columnEl) return;
+            const sortable = Sortable.create(columnEl, {
+              group: 'kanban',
+              animation: 150,
+              ghostClass: 'sortable-ghost',
+              onEnd: async (evt) => {
+                const itemId = evt.item.getAttribute('data-id');
+                const newStatus = evt.to.getAttribute('data-status');
+                await this.updateKanbanItemStatus(itemId, newStatus);
+              }
+            });
+            this.sortableInstances.push(sortable);
+          });
+        },
+
+        async updateKanbanItemStatus(itemId, newStatus) {
+          try {
+            const endpoint = this.kanbanView === 'epics' ? '/api/epics/' : '/api/issues/';
+            const res = await fetch(endpoint + itemId, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ status: newStatus })
+            });
+            if (res.ok) {
+              const items = this.kanbanView === 'epics' ? this.kanbanEpics : this.kanbanIssues;
+              const item = items.find(i => i.id === itemId);
+              if (item) { item.status = newStatus; item.updated_at = new Date().toISOString().split('T')[0]; }
+              this.refreshGitStatus();
+            }
+          } catch (e) { console.error('Failed to update status:', e); await this.loadKanban(); }
+        },
+
+        openKanbanDetail(item) {
+          this.kanbanDetailItem = { ...item };
+          this.kanbanDetailOpen = true;
+        },
+
+        async saveKanbanDetail() {
+          if (!this.kanbanDetailItem) return;
+          this.kanbanSaving = true;
+          try {
+            const endpoint = this.kanbanView === 'epics' ? '/api/epics/' : '/api/issues/';
+            const res = await fetch(endpoint + this.kanbanDetailItem.id, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(this.kanbanDetailItem)
+            });
+            if (res.ok) {
+              const data = await res.json();
+              const updated = this.kanbanView === 'epics' ? data.epic : data.issue;
+              const items = this.kanbanView === 'epics' ? this.kanbanEpics : this.kanbanIssues;
+              const index = items.findIndex(i => i.id === updated.id);
+              if (index !== -1) { items[index] = updated; }
+              this.kanbanDetailOpen = false;
+              this.kanbanDetailItem = null;
+              this.refreshGitStatus();
+              this.$nextTick(() => this.initKanbanDragDrop());
+            }
+          } catch (e) { console.error('Save failed:', e); }
+          this.kanbanSaving = false;
         }
       }
     }
