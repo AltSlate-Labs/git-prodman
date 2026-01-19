@@ -168,11 +168,11 @@ issueCommand
 
 function getStatusColor(status: string) {
   switch (status) {
-    case "open": return pc.blue;
+    case "planned": return pc.dim;
+    case "planning": return pc.blue;
     case "in_progress": return pc.yellow;
-    case "resolved": return pc.green;
-    case "closed": return pc.gray;
-    case "wontfix": return pc.red;
+    case "complete": return pc.green;
+    case "cancelled": return pc.red;
     default: return pc.white;
   }
 }

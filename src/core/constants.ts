@@ -42,13 +42,7 @@ export type SpecStatus = (typeof SPEC_STATUSES)[number];
 export const PRIORITIES = ["p0", "p1", "p2", "p3"] as const;
 export type Priority = (typeof PRIORITIES)[number];
 
-export const ISSUE_STATUSES = [
-  "open",
-  "in_progress",
-  "resolved",
-  "closed",
-  "wontfix",
-] as const;
+export const ISSUE_STATUSES = EPIC_STATUSES;
 export type IssueStatus = (typeof ISSUE_STATUSES)[number];
 
 export const ISSUE_TYPES = ["bug", "feature", "task", "improvement"] as const;

@@ -2,7 +2,7 @@
 id: ISS-001
 title: "Benchmark CLI startup time < 200ms"
 epic: EP-001
-status: resolved
+status: complete
 type: chore
 priority: p1
 assignee: null

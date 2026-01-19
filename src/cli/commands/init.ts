@@ -26,7 +26,7 @@ Instructions for AI agents working on this project.
 
 ### Epic Dependencies
 
-Always check the \`dependencies\` field in each epic. Never start an epic until all its dependencies are \`completed\`.
+Always check the \`dependencies\` field in each epic. Never start an epic until all its dependencies are \`complete\`.
 
 ---
 
@@ -140,7 +140,7 @@ When you encounter bugs, blockers, or unexpected behavior, create an issue file.
 id: "ISS-XXX"
 title: "Brief description"
 type: bug  # bug | feature | task | improvement
-status: open
+status: planned
 priority: p1  # p0=critical, p1=high, p2=medium, p3=low
 epic: "EP-XXX"  # Related epic, if any
 description: |
@@ -155,12 +155,12 @@ updated_at: "YYYY-MM-DD"
 ### Issue Status Values
 
 | Status | Meaning |
-|--------|---------|
-| \`open\` | Newly created |
+| Status | Meaning |
+| \`planned\` | Newly created |
+| \`planning\` | Being scoped |
 | \`in_progress\` | Being worked on |
-| \`resolved\` | Fixed, pending verification |
-| \`closed\` | Verified fixed |
-| \`wontfix\` | Decided not to address |
+| \`complete\` | Fixed and verified |
+| \`cancelled\` | Decided not to address |
 
 ---
 
@@ -367,19 +367,19 @@ export const initCommand = new Command("init")
 
       p.outro(
         pc.green("✓ ") +
-          "Initialized! Next steps:\n\n" +
-          pc.dim("  1. ") +
-          "Edit " +
-          pc.cyan(".prodman/product.yaml") +
-          " to define your product\n" +
-          pc.dim("  2. ") +
-          "Run " +
-          pc.cyan("prodman epic create 'First Epic'") +
-          " to create an epic\n" +
-          pc.dim("  3. ") +
-          "Run " +
-          pc.cyan("prodman ui") +
-          " to start the web interface"
+        "Initialized! Next steps:\n\n" +
+        pc.dim("  1. ") +
+        "Edit " +
+        pc.cyan(".prodman/product.yaml") +
+        " to define your product\n" +
+        pc.dim("  2. ") +
+        "Run " +
+        pc.cyan("prodman epic create 'First Epic'") +
+        " to create an epic\n" +
+        pc.dim("  3. ") +
+        "Run " +
+        pc.cyan("prodman ui") +
+        " to start the web interface"
       );
     } catch (error) {
       s.stop(pc.red("Failed to create structure"));
