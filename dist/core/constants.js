@@ -29,13 +29,7 @@ export const SPEC_STATUSES = [
     "implemented",
 ];
 export const PRIORITIES = ["p0", "p1", "p2", "p3"];
-export const ISSUE_STATUSES = [
-    "open",
-    "in_progress",
-    "resolved",
-    "closed",
-    "wontfix",
-];
+export const ISSUE_STATUSES = EPIC_STATUSES;
 export const ISSUE_TYPES = ["bug", "feature", "task", "improvement"];
 export const DECISION_STATUSES = [
     "proposed",

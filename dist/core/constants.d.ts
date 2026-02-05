@@ -22,7 +22,7 @@ export declare const SPEC_STATUSES: readonly ["draft", "review", "approved", "im
 export type SpecStatus = (typeof SPEC_STATUSES)[number];
 export declare const PRIORITIES: readonly ["p0", "p1", "p2", "p3"];
 export type Priority = (typeof PRIORITIES)[number];
-export declare const ISSUE_STATUSES: readonly ["open", "in_progress", "resolved", "closed", "wontfix"];
+export declare const ISSUE_STATUSES: readonly ["planned", "planning", "in_progress", "complete", "cancelled"];
 export type IssueStatus = (typeof ISSUE_STATUSES)[number];
 export declare const ISSUE_TYPES: readonly ["bug", "feature", "task", "improvement"];
 export type IssueType = (typeof ISSUE_TYPES)[number];

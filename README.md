@@ -6,6 +6,11 @@
   <p align="center">
     Local-first · AI-native · MIT licensed
   </p>
+  <p align="center">
+    <a href="https://www.npmjs.com/package/git-prodman"><img src="https://img.shields.io/npm/v/git-prodman.svg" alt="npm version"></a>
+    <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+    <a href="https://www.npmjs.com/package/git-prodman"><img src="https://img.shields.io/npm/dm/git-prodman.svg" alt="npm downloads"></a>
+  </p>
 </p>
 
 <p align="center">
@@ -48,7 +53,7 @@ npm install -g git-prodman
 ### From source
 
 ```bash
-git clone https://github.com/git-prodman/git-prodman.git
+git clone https://github.com/AltSlate-Labs/git-prodman.git
 cd git-prodman
 npm install
 npm run build
@@ -57,7 +62,7 @@ npm link
 
 ### Standalone binary
 
-Download from [Releases](https://github.com/git-prodman/git-prodman/releases):
+Download from [Releases](https://github.com/AltSlate-Labs/git-prodman/releases):
 
 | Platform | Download |
 |----------|----------|
@@ -305,7 +310,7 @@ This spec describes the authentication API endpoints...
 
 ```bash
 # Clone
-git clone https://github.com/git-prodman/git-prodman.git
+git clone https://github.com/AltSlate-Labs/git-prodman.git
 cd git-prodman
 
 # Install dependencies

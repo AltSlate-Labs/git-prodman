@@ -3,7 +3,7 @@ export declare const IssueSchema: z.ZodObject<{
     id: z.ZodString;
     title: z.ZodString;
     type: z.ZodDefault<z.ZodEnum<["bug", "feature", "task", "improvement"]>>;
-    status: z.ZodDefault<z.ZodEnum<["open", "in_progress", "resolved", "closed", "wontfix"]>>;
+    status: z.ZodDefault<z.ZodEnum<["planned", "planning", "in_progress", "complete", "cancelled"]>>;
     priority: z.ZodDefault<z.ZodEnum<["p0", "p1", "p2", "p3"]>>;
     epic: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     description: z.ZodOptional<z.ZodString>;
@@ -14,7 +14,7 @@ export declare const IssueSchema: z.ZodObject<{
     updated_at: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     type: "bug" | "feature" | "task" | "improvement";
-    status: "in_progress" | "open" | "resolved" | "closed" | "wontfix";
+    status: "planned" | "planning" | "in_progress" | "complete" | "cancelled";
     id: string;
     title: string;
     priority: "p0" | "p1" | "p2" | "p3";
@@ -31,7 +31,7 @@ export declare const IssueSchema: z.ZodObject<{
     created_at: string;
     updated_at: string;
     type?: "bug" | "feature" | "task" | "improvement" | undefined;
-    status?: "in_progress" | "open" | "resolved" | "closed" | "wontfix" | undefined;
+    status?: "planned" | "planning" | "in_progress" | "complete" | "cancelled" | undefined;
     description?: string | undefined;
     epic?: string | null | undefined;
     priority?: "p0" | "p1" | "p2" | "p3" | undefined;

@@ -1,6 +1,6 @@
 {
   "name": "git-prodman",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Git-native product management. Local-first, AI-native, MIT licensed.",
   "type": "module",
   "bin": {
@@ -58,15 +58,15 @@
     "roadmap",
     "local-first"
   ],
-  "author": "",
+  "author": "AltSlate Labs",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/git-prodman/git-prodman"
+    "url": "https://github.com/AltSlate-Labs/git-prodman"
   },
-  "homepage": "https://github.com/git-prodman/git-prodman#readme",
+  "homepage": "https://github.com/AltSlate-Labs/git-prodman#readme",
   "bugs": {
-    "url": "https://github.com/git-prodman/git-prodman/issues"
+    "url": "https://github.com/AltSlate-Labs/git-prodman/issues"
   },
   "engines": {
     "node": ">=18.0.0"
