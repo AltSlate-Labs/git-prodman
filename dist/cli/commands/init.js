@@ -39,8 +39,9 @@ The \`.prodman/\` directory contains all product management artifacts:
 ├── roadmap.yaml     # Milestones and releases
 ├── epics/           # Feature epics (EP-XXX.yaml)
 ├── specs/           # Technical specifications (SPEC-XXX.md)
-├── decisions/       # Architecture Decision Records (DEC-XXX.md)
 ├── issues/          # Bug reports and issues (ISS-XXX.yaml)
+├── decisions/       # Architecture Decision Records (DEC-XXX.md)
+├── journeys/        # User Journey maps (UJ-XXX.md)
 └── templates/       # Templates for new artifacts
 \`\`\`
 
@@ -53,6 +54,7 @@ The \`.prodman/\` directory contains all product management artifacts:
 | \`epics/EP-XXX.yaml\` | Feature requirements, acceptance criteria | Before implementing |
 | \`specs/SPEC-XXX.md\` | Technical design, API details | During implementation |
 | \`decisions/DEC-XXX.md\` | Architecture choices made | When making tech decisions |
+| \`journeys/UJ-XXX.md\` | User journey maps, steps, emotions | Understanding user experience |
 
 ---
 
@@ -311,7 +313,9 @@ export const initCommand = new Command("init")
             `${pc.dim("├──")} ${PRODMAN_FILES.roadmap}`,
             template !== "minimal" ? `${pc.dim("├──")} ${PRODMAN_DIRS.epics}/` : null,
             template !== "minimal" ? `${pc.dim("├──")} ${PRODMAN_DIRS.specs}/` : null,
+            template !== "minimal" ? `${pc.dim("├──")} ${PRODMAN_DIRS.issues}/` : null,
             template !== "minimal" ? `${pc.dim("├──")} ${PRODMAN_DIRS.decisions}/` : null,
+            template !== "minimal" ? `${pc.dim("├──")} ${PRODMAN_DIRS.journeys}/` : null,
             template !== "minimal" ? `${pc.dim("└──")} ${PRODMAN_DIRS.templates}/` : null,
         ]
             .filter(Boolean)
