@@ -15,6 +15,7 @@ export const PRODMAN_DIRS = {
   decisions: "decisions",
   templates: "templates",
   issues: "issues",
+  journeys: "journeys",
 } as const;
 
 export const DEFAULT_CONFIG_PATH = "~/.config/prodman/config.yaml";
@@ -56,3 +57,30 @@ export const DECISION_STATUSES = [
   "deprecated",
 ] as const;
 export type DecisionStatus = (typeof DECISION_STATUSES)[number];
+
+export const JOURNEY_STATUSES = [
+  "draft",
+  "validated",
+  "implemented",
+  "deprecated",
+] as const;
+export type JourneyStatus = (typeof JOURNEY_STATUSES)[number];
+
+export const EMOTIONS = [
+  "frustrated",
+  "confused",
+  "neutral",
+  "satisfied",
+  "delighted",
+] as const;
+export type Emotion = (typeof EMOTIONS)[number];
+
+export const TOUCHPOINTS = [
+  "cli",
+  "web-ui",
+  "docs",
+  "api",
+  "external",
+  "notification",
+] as const;
+export type Touchpoint = (typeof TOUCHPOINTS)[number];

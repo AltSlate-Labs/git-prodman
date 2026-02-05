@@ -7,6 +7,7 @@ import { epicCommand } from "./commands/epic.js";
 import { specCommand } from "./commands/spec.js";
 import { issueCommand } from "./commands/issue.js";
 import { decisionCommand } from "./commands/decision.js";
+import { journeyCommand } from "./commands/journey.js";
 import { syncCommand, pullCommand, resolveCommand, conflictsCommand } from "./commands/sync.js";
 import { diffCommand } from "./commands/diff.js";
 import { statusCommand } from "./commands/status.js";
@@ -43,6 +44,9 @@ program.addCommand(issueCommand);
 
 // Decision management
 program.addCommand(decisionCommand);
+
+// User Journey management
+program.addCommand(journeyCommand);
 
 // Git sync operations
 program.addCommand(syncCommand);

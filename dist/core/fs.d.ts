@@ -3,6 +3,7 @@ import { type Epic } from "./schemas/epic.js";
 import { type Spec } from "./schemas/spec.js";
 import { type Issue } from "./schemas/issue.js";
 import type { Decision } from "./schemas/decision.js";
+import type { Journey } from "./schemas/journey.js";
 /**
  * Find the root of the prodman project (directory containing .prodman/)
  */
@@ -50,7 +51,7 @@ export declare function writeSpec(root: string, spec: Spec): string;
 /**
  * Generate next ID for a given type
  */
-export declare function generateId(root: string, type: "epic" | "spec" | "decision" | "issue"): string;
+export declare function generateId(root: string, type: "epic" | "spec" | "decision" | "issue" | "journey"): string;
 /**
  * Slugify a string for filenames
  */
@@ -67,3 +68,9 @@ export declare function readDecisions(root: string): Decision[];
 export declare function readDecision(root: string, id: string): Decision | null;
 /** Write a decision */
 export declare function writeDecision(root: string, decision: Decision): string;
+/** Read all journeys */
+export declare function readJourneys(root: string): Journey[];
+/** Read a single journey by ID */
+export declare function readJourney(root: string, id: string): Journey | null;
+/** Write a journey */
+export declare function writeJourney(root: string, journey: Journey): string;

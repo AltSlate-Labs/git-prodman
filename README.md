@@ -30,7 +30,8 @@
 ## Features
 
 - 📝 **Specs & Epics** — YAML + Markdown files with schema validation
-- 🗺️ **Roadmap** — Timeline view of milestones and releases  
+- 🚶 **User Journeys** — Map user experiences with steps, emotions, and touchpoints
+- 🗺️ **Roadmap** — Timeline view of milestones and releases
 - 🤖 **AI Assistant** — Query your product with natural language (OpenAI, Anthropic, Ollama)
 - 🌐 **Bundled Web UI** — Visual editor served locally, no separate install
 - 🔀 **Git-Native** — Every save is a commit, sync when ready
@@ -91,6 +92,7 @@ This creates a `.prodman/` directory:
 ├── specs/            # Spec Markdown files
 ├── issues/           # Issue tracking
 ├── decisions/        # Architecture Decision Records
+├── journeys/         # User Journey maps
 └── templates/        # Templates for new artifacts
 ```
 
@@ -120,6 +122,12 @@ prodman spec show SP-001  # Show spec details
 # Issues
 prodman issue create      # Create new issue
 prodman issue list        # List all issues
+
+# User Journeys
+prodman journey create    # Create new user journey
+prodman journey list      # List all journeys
+prodman journey show UJ-001  # Show journey details
+prodman journey update UJ-001 --add-step  # Add steps interactively
 
 # Decisions (ADRs)
 prodman decision create   # Create new ADR
@@ -166,6 +174,8 @@ Opens `http://localhost:3333` with:
 - **Roadmap** — Timeline view of milestones
 - **Epics** — Table view with status badges
 - **Specs** — List + split-pane Markdown editor
+- **Journeys** — User journey maps with step visualization
+- **Kanban** — Drag-and-drop board for epics and issues
 - **Files** — Tree explorer for `.prodman/` directory
 - **AI** — Chat interface with streaming responses
 
@@ -299,6 +309,41 @@ author: "@bob"
 ## Overview
 
 This spec describes the authentication API endpoints...
+```
+
+### User Journey (Markdown + Frontmatter)
+
+```markdown
+---
+id: UJ-001
+title: "First-time project setup"
+persona: "open-source-maintainer"  # References target_users in product.yaml
+goal: "Initialize prodman in an existing repository"
+status: draft  # draft | validated | implemented | deprecated
+priority: p1
+steps:
+  - order: 1
+    action: "Install prodman via npm"
+    touchpoint: cli  # cli | web-ui | docs | api | external
+    emotion: neutral  # frustrated | confused | neutral | satisfied | delighted
+    pain_points: []
+    opportunities: []
+  - order: 2
+    action: "Run prodman init"
+    touchpoint: cli
+    emotion: satisfied
+    pain_points: []
+    opportunities:
+      - "Could auto-detect project type"
+epics:
+  - EP-001
+---
+
+# First-time project setup
+
+## Overview
+
+This journey maps the experience of setting up prodman for the first time...
 ```
 
 ## Development

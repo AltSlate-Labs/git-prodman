@@ -143,13 +143,14 @@ export function writeSpec(root, spec) {
  */
 export function generateId(root, type) {
     const config = readConfig(root);
-    const counters = config?.counters || { epic: 0, spec: 0, decision: 0, issue: 0 };
+    const counters = config?.counters || { epic: 0, spec: 0, decision: 0, issue: 0, journey: 0 };
     const next = (counters[type] || 0) + 1;
     const prefixes = {
         epic: "EP",
         spec: "SPEC",
         decision: "DEC",
         issue: "ISS",
+        journey: "UJ",
     };
     // Update counter
     if (config) {
@@ -234,6 +235,52 @@ export function writeDecision(root, decision) {
     const filename = `${decision.id.toLowerCase()}-${slug}.md`;
     const filePath = join(decisionsDir, filename);
     const { content, ...frontmatter } = decision;
+    const fileContent = matter.stringify(content, frontmatter);
+    writeFileSync(filePath, fileContent, "utf-8");
+    return filePath;
+}
+/** Read all journeys */
+export function readJourneys(root) {
+    const journeysDir = getProdmanPath(root, PRODMAN_DIRS.journeys);
+    if (!existsSync(journeysDir))
+        return [];
+    const files = readdirSync(journeysDir).filter((f) => f.endsWith(".md"));
+    return files.map((file) => {
+        const content = readFileSync(join(journeysDir, file), "utf-8");
+        const { data, content: body } = matter(content);
+        const now = new Date().toISOString().split("T")[0];
+        return {
+            id: data.id || `UJ-${file.replace(".md", "").toUpperCase().slice(0, 8)}`,
+            title: data.title || file.replace(".md", "").replace(/-/g, " "),
+            persona: data.persona || null,
+            goal: data.goal || "",
+            status: data.status || "draft",
+            priority: data.priority || "p2",
+            steps: data.steps || [],
+            epics: data.epics || [],
+            related_journeys: data.related_journeys || [],
+            author: data.author || null,
+            created_at: data.created_at || now,
+            updated_at: data.updated_at || now,
+            content: body,
+        };
+    });
+}
+/** Read a single journey by ID */
+export function readJourney(root, id) {
+    const journeys = readJourneys(root);
+    return journeys.find((j) => j.id.toUpperCase() === id.toUpperCase()) || null;
+}
+/** Write a journey */
+export function writeJourney(root, journey) {
+    const journeysDir = getProdmanPath(root, PRODMAN_DIRS.journeys);
+    if (!existsSync(journeysDir)) {
+        mkdirSync(journeysDir, { recursive: true });
+    }
+    const slug = slugify(journey.title);
+    const filename = `${journey.id.toLowerCase()}-${slug}.md`;
+    const filePath = join(journeysDir, filename);
+    const { content, ...frontmatter } = journey;
     const fileContent = matter.stringify(content, frontmatter);
     writeFileSync(filePath, fileContent, "utf-8");
     return filePath;

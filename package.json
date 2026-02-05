@@ -1,6 +1,6 @@
 {
   "name": "git-prodman",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Git-native product management. Local-first, AI-native, MIT licensed.",
   "type": "module",
   "bin": {

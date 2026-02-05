@@ -287,6 +287,7 @@ export const initCommand = new Command("init")
           spec: 0,
           decision: 0,
           issue: 0,
+          journey: 0,
         },
       };
 

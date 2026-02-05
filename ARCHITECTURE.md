@@ -52,6 +52,7 @@ src/
 │       ├── spec.ts        # Spec CRUD
 │       ├── issue.ts       # Issue CRUD
 │       ├── decision.ts    # ADR CRUD
+│       ├── journey.ts     # User Journey CRUD
 │       ├── sync.ts        # Git push/pull/resolve
 │       ├── diff.ts        # Show uncommitted changes
 │       ├── status.ts      # Project overview
@@ -67,7 +68,8 @@ src/
 │       ├── epic.ts        # Epic schema
 │       ├── spec.ts        # Spec schema
 │       ├── issue.ts       # Issue schema
-│       └── decision.ts    # Decision schema
+│       ├── decision.ts    # Decision schema
+│       └── journey.ts     # Journey schema
 └── web/                   # (Reserved for future React build)
 ```
 
@@ -175,9 +177,9 @@ The web UI is server-rendered HTML with client-side interactivity via Alpine.js.
 │  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐   │   │
 │  │  │Dashboard│ │ Roadmap │ │  Epics  │ │  Specs  │   │   │
 │  │  └─────────┘ └─────────┘ └─────────┘ └─────────┘   │   │
-│  │  ┌─────────┐ ┌─────────┐                           │   │
-│  │  │  Files  │ │   AI    │                           │   │
-│  │  └─────────┘ └─────────┘                           │   │
+│  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐   │   │
+│  │  │Journeys │ │ Kanban  │ │  Files  │ │   AI    │   │   │
+│  │  └─────────┘ └─────────┘ └─────────┘ └─────────┘   │   │
 │  └─────────────────────────────────────────────────────┘   │
 └─────────────────────┬───────────────────────────────────────┘
                       │ fetch()
@@ -187,9 +189,11 @@ The web UI is server-rendered HTML with client-side interactivity via Alpine.js.
 │  ┌─────────────────────────────────────────────────────┐   │
 │  │                   API Routes                         │   │
 │  │  GET  /api/epics         GET  /api/specs            │   │
+│  │  GET  /api/issues        GET  /api/journeys         │   │
 │  │  GET  /api/roadmap       GET  /api/git/status       │   │
-│  │  PUT  /api/specs/:id     POST /api/chat             │   │
-│  │  GET  /api/files         GET  /api/git/conflicts    │   │
+│  │  PUT  /api/specs/:id     PUT  /api/journeys/:id     │   │
+│  │  PUT  /api/epics/:id     PUT  /api/issues/:id       │   │
+│  │  POST /api/chat          GET  /api/files            │   │
 │  └─────────────────────────────────────────────────────┘   │
 │  ┌─────────────────────────────────────────────────────┐   │
 │  │              HTML Generation                         │   │
@@ -321,7 +325,9 @@ if (!parsed.success) {
 ├── issues/
 │   └── ISS-001-*.yaml  # Issue tracking
 ├── decisions/
-│   └── ADR-001-*.md    # Architecture Decision Records
+│   └── DEC-001-*.md    # Architecture Decision Records
+├── journeys/
+│   └── UJ-001-*.md     # User Journey maps
 └── templates/          # Templates for new artifacts
 ```
 
@@ -363,6 +369,36 @@ updated_at: 2026-01-11
 # Spec Title
 
 Markdown content goes here...
+```
+
+### Journey Markdown Schema
+
+```markdown
+---
+id: UJ-001
+title: "Journey Title"
+persona: "target-user-id"     # References target_users.id in product.yaml
+goal: "What the user wants"
+status: draft                 # draft|validated|implemented|deprecated
+priority: p1                  # p0|p1|p2|p3
+steps:
+  - order: 1
+    action: "User does something"
+    touchpoint: cli           # cli|web-ui|docs|api|external|notification
+    emotion: neutral          # frustrated|confused|neutral|satisfied|delighted
+    pain_points: []           # Array of friction points
+    opportunities: []         # Array of improvement ideas
+epics:                        # Linked epic IDs
+  - EP-001
+related_journeys: []          # Related journey IDs
+author: "@username"
+created_at: 2026-01-11
+updated_at: 2026-01-11
+---
+
+# Journey Title
+
+Additional context and notes in markdown...
 ```
 
 ## Configuration

@@ -32,6 +32,7 @@ export const RepoConfigSchema = z.object({
       epic: z.string().optional(),
       spec: z.string().optional(),
       decision: z.string().optional(),
+      journey: z.string().optional(),
     })
     .optional(),
   counters: z
@@ -40,6 +41,7 @@ export const RepoConfigSchema = z.object({
       spec: z.number().default(0),
       decision: z.number().default(0),
       issue: z.number().default(0),
+      journey: z.number().default(0),
     })
     .optional(),
 });

@@ -12,6 +12,7 @@ export declare const PRODMAN_DIRS: {
     readonly decisions: "decisions";
     readonly templates: "templates";
     readonly issues: "issues";
+    readonly journeys: "journeys";
 };
 export declare const DEFAULT_CONFIG_PATH = "~/.config/prodman/config.yaml";
 export declare const AI_PROVIDERS: readonly ["openai", "anthropic", "ollama"];
@@ -22,9 +23,15 @@ export declare const SPEC_STATUSES: readonly ["draft", "review", "approved", "im
 export type SpecStatus = (typeof SPEC_STATUSES)[number];
 export declare const PRIORITIES: readonly ["p0", "p1", "p2", "p3"];
 export type Priority = (typeof PRIORITIES)[number];
-export declare const ISSUE_STATUSES: readonly ["open", "in_progress", "resolved", "closed", "wontfix"];
+export declare const ISSUE_STATUSES: readonly ["planned", "planning", "in_progress", "complete", "cancelled"];
 export type IssueStatus = (typeof ISSUE_STATUSES)[number];
 export declare const ISSUE_TYPES: readonly ["bug", "feature", "task", "improvement"];
 export type IssueType = (typeof ISSUE_TYPES)[number];
 export declare const DECISION_STATUSES: readonly ["proposed", "accepted", "rejected", "superseded", "deprecated"];
 export type DecisionStatus = (typeof DECISION_STATUSES)[number];
+export declare const JOURNEY_STATUSES: readonly ["draft", "validated", "implemented", "deprecated"];
+export type JourneyStatus = (typeof JOURNEY_STATUSES)[number];
+export declare const EMOTIONS: readonly ["frustrated", "confused", "neutral", "satisfied", "delighted"];
+export type Emotion = (typeof EMOTIONS)[number];
+export declare const TOUCHPOINTS: readonly ["cli", "web-ui", "docs", "api", "external", "notification"];
+export type Touchpoint = (typeof TOUCHPOINTS)[number];

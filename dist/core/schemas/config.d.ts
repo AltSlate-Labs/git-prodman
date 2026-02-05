@@ -58,29 +58,35 @@ export declare const RepoConfigSchema: z.ZodObject<{
         epic: z.ZodOptional<z.ZodString>;
         spec: z.ZodOptional<z.ZodString>;
         decision: z.ZodOptional<z.ZodString>;
+        journey: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
         epic?: string | undefined;
         spec?: string | undefined;
         decision?: string | undefined;
+        journey?: string | undefined;
     }, {
         epic?: string | undefined;
         spec?: string | undefined;
         decision?: string | undefined;
+        journey?: string | undefined;
     }>>;
     counters: z.ZodOptional<z.ZodObject<{
         epic: z.ZodDefault<z.ZodNumber>;
         spec: z.ZodDefault<z.ZodNumber>;
         decision: z.ZodDefault<z.ZodNumber>;
         issue: z.ZodDefault<z.ZodNumber>;
+        journey: z.ZodDefault<z.ZodNumber>;
     }, "strip", z.ZodTypeAny, {
         epic: number;
         spec: number;
         decision: number;
+        journey: number;
         issue: number;
     }, {
         epic?: number | undefined;
         spec?: number | undefined;
         decision?: number | undefined;
+        journey?: number | undefined;
         issue?: number | undefined;
     }>>;
 }, "strip", z.ZodTypeAny, {
@@ -94,6 +100,7 @@ export declare const RepoConfigSchema: z.ZodObject<{
         epic?: string | undefined;
         spec?: string | undefined;
         decision?: string | undefined;
+        journey?: string | undefined;
     } | undefined;
     sync?: {
         remote: string;
@@ -111,6 +118,7 @@ export declare const RepoConfigSchema: z.ZodObject<{
         epic: number;
         spec: number;
         decision: number;
+        journey: number;
         issue: number;
     } | undefined;
 }, {
@@ -123,6 +131,7 @@ export declare const RepoConfigSchema: z.ZodObject<{
         epic?: string | undefined;
         spec?: string | undefined;
         decision?: string | undefined;
+        journey?: string | undefined;
     } | undefined;
     schema_version?: number | undefined;
     sync?: {
@@ -141,6 +150,7 @@ export declare const RepoConfigSchema: z.ZodObject<{
         epic?: number | undefined;
         spec?: number | undefined;
         decision?: number | undefined;
+        journey?: number | undefined;
         issue?: number | undefined;
     } | undefined;
 }>;

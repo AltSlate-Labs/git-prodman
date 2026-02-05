@@ -15,6 +15,7 @@ templates:
   epic: ".prodman/templates/epic.yaml"
   spec: ".prodman/templates/spec.md"
   decision: ".prodman/templates/decision.md"
+  journey: ".prodman/templates/journey.md"
 
 # ID auto-increment counters
 counters:
@@ -22,3 +23,4 @@ counters:
   spec: 1      # Next: SPEC-002
   decision: 0  # Next: DEC-001
   issue: 1     # Next: ISS-002
+  journey: 1   # Next: UJ-002

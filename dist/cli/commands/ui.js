@@ -8,7 +8,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from "fs";
 import { join } from "path";
 import { homedir } from "os";
 import YAML from "yaml";
-import { findProdmanRoot, readConfig, readEpics, readSpecs, writeSpec, getProdmanPath, readIssues, writeEpic, writeIssue, } from "../../core/fs.js";
+import { findProdmanRoot, readConfig, readEpics, readSpecs, writeSpec, getProdmanPath, readIssues, writeEpic, writeIssue, readJourneys, writeJourney, } from "../../core/fs.js";
 import { VERSION, PRODMAN_FILES } from "../../core/constants.js";
 import { getGitStatus, commitChange, generateCommitMessage, getConflicts, resolveConflict, } from "../../core/git.js";
 const USER_CONFIG_PATH = join(homedir(), ".config", "prodman", "config.yaml");
@@ -192,6 +192,48 @@ function createApp(root) {
             }
             catch { }
             return c.json({ success: true, issue: updated });
+        }
+        catch (e) {
+            return c.json({ error: e.message }, 500);
+        }
+    });
+    // Journeys API
+    app.get("/api/journeys", (c) => c.json(readJourneys(root)));
+    app.get("/api/journeys/:id", (c) => {
+        const journeys = readJourneys(root);
+        const journey = journeys.find((j) => j.id.toUpperCase() === c.req.param("id").toUpperCase());
+        if (!journey)
+            return c.json({ error: "Journey not found" }, 404);
+        return c.json(journey);
+    });
+    app.put("/api/journeys/:id", async (c) => {
+        try {
+            const id = c.req.param("id").toUpperCase();
+            const body = await c.req.json();
+            const journeys = readJourneys(root);
+            const existing = journeys.find((j) => j.id.toUpperCase() === id);
+            if (!existing)
+                return c.json({ error: "Journey not found" }, 404);
+            const updated = {
+                ...existing,
+                title: body.title || existing.title,
+                content: body.content ?? existing.content,
+                status: body.status || existing.status,
+                priority: body.priority || existing.priority,
+                persona: body.persona !== undefined ? body.persona : existing.persona,
+                goal: body.goal !== undefined ? body.goal : existing.goal,
+                steps: body.steps || existing.steps,
+                epics: body.epics || existing.epics,
+                updated_at: new Date().toISOString().split("T")[0],
+            };
+            const filepath = writeJourney(root, updated);
+            const relPath = filepath.replace(root + "/", "");
+            try {
+                const msg = generateCommitMessage(relPath, "update");
+                commitChange(root, relPath, msg);
+            }
+            catch { }
+            return c.json({ success: true, journey: updated });
         }
         catch (e) {
             return c.json({ error: e.message }, 500);
@@ -472,12 +514,12 @@ function getDashboardHTML(root) {
     <!-- Navigation -->
     <nav class="border-b border-base px-6" style="background: var(--bg-secondary);">
       <div class="flex gap-1">
-        <template x-for="t in ['dashboard', 'roadmap', 'epics', 'specs', 'kanban', 'files', 'ai']">
+        <template x-for="t in ['dashboard', 'roadmap', 'epics', 'specs', 'journeys', 'kanban', 'files', 'ai']">
           <button
-            @click="tab = t; if(t === 'specs') loadSpecs(); if(t === 'files') loadFiles(); if(t === 'kanban') loadKanban();"
+            @click="tab = t; if(t === 'specs') loadSpecs(); if(t === 'files') loadFiles(); if(t === 'kanban') loadKanban(); if(t === 'journeys') loadJourneys();"
             :class="tab === t ? 'border-cyan-400 text-cyan-400' : 'border-transparent text-muted hover:text-base'"
             class="px-4 py-3 border-b-2 text-sm font-medium transition-all capitalize"
-            x-text="t === 'dashboard' ? '📊 Dashboard' : t === 'roadmap' ? '🗺️ Roadmap' : t === 'epics' ? '🎯 Epics' : t === 'specs' ? '📝 Specs' : t === 'kanban' ? '📋 Kanban' : t === 'files' ? '📁 Files' : '🤖 AI'"
+            x-text="t === 'dashboard' ? '📊 Dashboard' : t === 'roadmap' ? '🗺️ Roadmap' : t === 'epics' ? '🎯 Epics' : t === 'specs' ? '📝 Specs' : t === 'journeys' ? '🚶 Journeys' : t === 'kanban' ? '📋 Kanban' : t === 'files' ? '📁 Files' : '🤖 AI'"
           ></button>
         </template>
       </div>
@@ -638,6 +680,121 @@ function getDashboardHTML(root) {
             <div class="bg-card rounded-xl border border-base flex flex-col overflow-hidden">
               <div class="px-4 py-2 border-b border-base text-sm text-muted">Preview</div>
               <div class="flex-1 p-4 overflow-auto prose" x-html="previewHTML"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Journeys Tab -->
+      <div x-show="tab === 'journeys'">
+        <div x-show="!viewingJourney">
+          <h1 class="text-2xl font-bold mb-6">User Journeys</h1>
+          <div class="bg-card rounded-xl border border-base overflow-hidden">
+            <table class="w-full">
+              <thead class="bg-hover"><tr>
+                <th class="text-left px-4 py-3 text-sm font-medium text-muted">ID</th>
+                <th class="text-left px-4 py-3 text-sm font-medium text-muted">Title</th>
+                <th class="text-left px-4 py-3 text-sm font-medium text-muted">Persona</th>
+                <th class="text-left px-4 py-3 text-sm font-medium text-muted">Status</th>
+                <th class="text-left px-4 py-3 text-sm font-medium text-muted">Steps</th>
+                <th class="text-left px-4 py-3 text-sm font-medium text-muted">Actions</th>
+              </tr></thead>
+              <tbody class="divide-y divide-gray-800/50">
+                <template x-for="journey in journeys" :key="journey.id">
+                  <tr class="hover:bg-hover transition-colors">
+                    <td class="px-4 py-3 text-cyan-400 font-mono text-sm" x-text="journey.id"></td>
+                    <td class="px-4 py-3" x-text="journey.title"></td>
+                    <td class="px-4 py-3 text-sm text-muted" x-text="journey.persona || '-'"></td>
+                    <td class="px-4 py-3"><span class="px-2 py-1 rounded text-xs" :class="getJourneyStatusClass(journey.status)" x-text="journey.status"></span></td>
+                    <td class="px-4 py-3 text-sm text-muted" x-text="journey.steps?.length || 0"></td>
+                    <td class="px-4 py-3"><button @click="openJourneyView(journey)" class="px-3 py-1.5 text-xs bg-cyan-600 hover:bg-cyan-500 rounded-lg transition-colors">View</button></td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+            <div x-show="journeys.length === 0" class="text-muted text-center py-8">No journeys yet. Create one with: prodman journey create</div>
+          </div>
+        </div>
+        <div x-show="viewingJourney" class="space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <button @click="closeJourneyView()" class="text-muted hover:text-base transition-colors">&larr; Back</button>
+              <h1 class="text-xl font-bold" x-text="viewingJourney?.title"></h1>
+              <span class="px-2 py-1 rounded text-xs" :class="getJourneyStatusClass(viewingJourney?.status)" x-text="viewingJourney?.status"></span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span x-show="journeySaving" class="text-sm text-muted">Saving...</span>
+              <span x-show="journeySaved" class="text-sm text-emerald-400">Saved</span>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-4">
+              <!-- Journey Info -->
+              <div class="bg-card rounded-xl border border-base p-5">
+                <h2 class="text-lg font-semibold mb-4">Journey Details</h2>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                  <div><span class="text-xs text-muted block mb-1">Persona</span><span x-text="viewingJourney?.persona || 'Not set'"></span></div>
+                  <div><span class="text-xs text-muted block mb-1">Priority</span><span x-text="viewingJourney?.priority?.toUpperCase()"></span></div>
+                </div>
+                <div><span class="text-xs text-muted block mb-1">Goal</span><p class="text-sm" x-text="viewingJourney?.goal || 'No goal defined'"></p></div>
+              </div>
+              <!-- Journey Steps -->
+              <div class="bg-card rounded-xl border border-base p-5">
+                <h2 class="text-lg font-semibold mb-4">Journey Steps</h2>
+                <div x-show="viewingJourney?.steps?.length > 0" class="space-y-3">
+                  <template x-for="step in viewingJourney?.steps" :key="step.order">
+                    <div class="flex items-start gap-4 p-3 bg-hover rounded-lg">
+                      <div class="w-8 h-8 rounded-full bg-cyan-600 flex items-center justify-center text-sm font-bold" x-text="step.order"></div>
+                      <div class="flex-1">
+                        <div class="font-medium" x-text="step.action"></div>
+                        <div class="flex items-center gap-3 mt-1 text-xs">
+                          <span class="px-2 py-0.5 bg-gray-700 rounded" x-text="step.touchpoint"></span>
+                          <span :class="getEmotionClass(step.emotion)" x-text="step.emotion"></span>
+                        </div>
+                        <div x-show="step.pain_points?.length > 0" class="mt-2"><span class="text-xs text-red-400">Pain points:</span><ul class="text-xs text-muted ml-4"><template x-for="pp in step.pain_points"><li x-text="pp"></li></template></ul></div>
+                        <div x-show="step.opportunities?.length > 0" class="mt-2"><span class="text-xs text-green-400">Opportunities:</span><ul class="text-xs text-muted ml-4"><template x-for="opp in step.opportunities"><li x-text="opp"></li></template></ul></div>
+                      </div>
+                    </div>
+                  </template>
+                </div>
+                <div x-show="!viewingJourney?.steps?.length" class="text-muted text-center py-4">No steps defined yet. Add steps with: prodman journey update --add-step</div>
+              </div>
+            </div>
+            <div class="space-y-4">
+              <!-- Linked Epics -->
+              <div class="bg-card rounded-xl border border-base p-5">
+                <h2 class="text-sm font-semibold mb-3 text-muted">Linked Epics</h2>
+                <div x-show="viewingJourney?.epics?.length > 0" class="space-y-2">
+                  <template x-for="epicId in viewingJourney?.epics" :key="epicId">
+                    <div class="px-3 py-2 bg-hover rounded text-sm font-mono text-cyan-400" x-text="epicId"></div>
+                  </template>
+                </div>
+                <div x-show="!viewingJourney?.epics?.length" class="text-muted text-sm">No linked epics</div>
+              </div>
+              <!-- Quick Edit -->
+              <div class="bg-card rounded-xl border border-base p-5">
+                <h2 class="text-sm font-semibold mb-3 text-muted">Quick Edit</h2>
+                <div class="space-y-3">
+                  <div>
+                    <label class="text-xs text-muted block mb-1">Status</label>
+                    <select x-model="viewingJourney.status" @change="saveJourney()" class="w-full bg-hover border border-base rounded-lg px-3 py-2 text-sm">
+                      <option value="draft">Draft</option>
+                      <option value="validated">Validated</option>
+                      <option value="implemented">Implemented</option>
+                      <option value="deprecated">Deprecated</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="text-xs text-muted block mb-1">Priority</label>
+                    <select x-model="viewingJourney.priority" @change="saveJourney()" class="w-full bg-hover border border-base rounded-lg px-3 py-2 text-sm">
+                      <option value="p0">P0 - Critical</option>
+                      <option value="p1">P1 - High</option>
+                      <option value="p2">P2 - Medium</option>
+                      <option value="p3">P3 - Low</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -863,6 +1020,12 @@ function getDashboardHTML(root) {
         streaming: false,
         streamingContent: '',
 
+        // Journeys state
+        journeys: [],
+        viewingJourney: null,
+        journeySaving: false,
+        journeySaved: false,
+
         // Kanban state
         kanbanView: 'epics',
         kanbanEpics: [],
@@ -888,6 +1051,7 @@ function getDashboardHTML(root) {
 
         async loadSpecs() { this.specs = await fetch('/api/specs').then(r => r.json()); },
         async loadFiles() { this.fileTree = await fetch('/api/files').then(r => r.json()); },
+        async loadJourneys() { this.journeys = await fetch('/api/journeys').then(r => r.json()); },
         async refreshGitStatus() { try { this.gitStatus = await fetch('/api/git/status').then(r => r.json()); } catch {} },
 
         async viewFile(path) {
@@ -942,6 +1106,32 @@ function getDashboardHTML(root) {
 
         getSpecStatusClass(status) {
           return { draft: 'bg-gray-700 text-gray-300', review: 'bg-yellow-900/50 text-yellow-300', approved: 'bg-blue-900/50 text-blue-300', implemented: 'bg-emerald-900/50 text-emerald-300' }[status] || 'bg-gray-700 text-gray-300';
+        },
+
+        // Journey methods
+        openJourneyView(journey) { this.viewingJourney = { ...journey }; this.journeySaved = false; },
+        closeJourneyView() { this.viewingJourney = null; },
+
+        getJourneyStatusClass(status) {
+          return { draft: 'bg-blue-900/50 text-blue-300', validated: 'bg-yellow-900/50 text-yellow-300', implemented: 'bg-emerald-900/50 text-emerald-300', deprecated: 'bg-gray-700 text-gray-300' }[status] || 'bg-gray-700 text-gray-300';
+        },
+
+        getEmotionClass(emotion) {
+          return { frustrated: 'text-red-400', confused: 'text-yellow-400', neutral: 'text-gray-400', satisfied: 'text-green-400', delighted: 'text-purple-400' }[emotion] || 'text-gray-400';
+        },
+
+        async saveJourney() {
+          if (!this.viewingJourney) return;
+          this.journeySaving = true; this.journeySaved = false;
+          try {
+            const res = await fetch('/api/journeys/' + this.viewingJourney.id, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(this.viewingJourney)
+            });
+            if (res.ok) { const data = await res.json(); this.viewingJourney = data.journey; this.journeySaved = true; this.loadJourneys(); this.refreshGitStatus(); setTimeout(() => this.journeySaved = false, 3000); }
+          } catch (e) { console.error('Save failed:', e); }
+          this.journeySaving = false;
         },
 
         // Kanban methods

@@ -12,6 +12,7 @@ export const PRODMAN_DIRS = {
     decisions: "decisions",
     templates: "templates",
     issues: "issues",
+    journeys: "journeys",
 };
 export const DEFAULT_CONFIG_PATH = "~/.config/prodman/config.yaml";
 export const AI_PROVIDERS = ["openai", "anthropic", "ollama"];
@@ -29,13 +30,7 @@ export const SPEC_STATUSES = [
     "implemented",
 ];
 export const PRIORITIES = ["p0", "p1", "p2", "p3"];
-export const ISSUE_STATUSES = [
-    "open",
-    "in_progress",
-    "resolved",
-    "closed",
-    "wontfix",
-];
+export const ISSUE_STATUSES = EPIC_STATUSES;
 export const ISSUE_TYPES = ["bug", "feature", "task", "improvement"];
 export const DECISION_STATUSES = [
     "proposed",
@@ -43,4 +38,25 @@ export const DECISION_STATUSES = [
     "rejected",
     "superseded",
     "deprecated",
+];
+export const JOURNEY_STATUSES = [
+    "draft",
+    "validated",
+    "implemented",
+    "deprecated",
+];
+export const EMOTIONS = [
+    "frustrated",
+    "confused",
+    "neutral",
+    "satisfied",
+    "delighted",
+];
+export const TOUCHPOINTS = [
+    "cli",
+    "web-ui",
+    "docs",
+    "api",
+    "external",
+    "notification",
 ];
